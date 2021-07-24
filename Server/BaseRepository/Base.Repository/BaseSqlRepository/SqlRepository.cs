@@ -23,6 +23,7 @@ namespace Base.Repository.BaseSqlRepository
         public virtual Task Delete(TEntity entity)
         {
             DbSet.Remove(entity);
+            Db.SaveChanges();
             return Task.FromResult("");            
         }
 

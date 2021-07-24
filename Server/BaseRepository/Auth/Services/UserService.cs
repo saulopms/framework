@@ -2,8 +2,6 @@ using Auth.Models;
 using Auth.Repositories;
 using AutoMapper;
 using Base.Repository;
-using System.Linq;
-using System.Collections.Generic;
 using Isopoh.Cryptography.Argon2;
 using System.Net;
 using Auth.Models.Validator;
@@ -15,13 +13,13 @@ using Base.Repository.ExceptionUtils;
 namespace Auth.Services {
     public class UserService : BaseServiceValidation, IUserService {
         private readonly IUserRepository userRepository;
+        private readonly ITokenService tokenService;
         private readonly IMapper _mapper;
-        private IConfiguration _configuration { get; }
         public UserService (IUserRepository UserRepository,
-            IMapper Mapper, IConfiguration Configuration) {
+            IMapper Mapper, ITokenService TokenService) {
             userRepository = UserRepository;
             _mapper = Mapper;
-            _configuration = Configuration;
+            tokenService = TokenService;
         }
         public async Task<User> GetById(long id)
         {
@@ -38,7 +36,7 @@ namespace Auth.Services {
             var resposta = _mapper.Map<UserDto>(user);        
             if ((user != null) && (user.Id > 0))
             {
-                return TokenService.GenerateToken(resposta);
+                return tokenService.GenerateToken(resposta);
             }
             return "";            
         }

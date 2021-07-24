@@ -10,16 +10,16 @@ using Auth.Models.DTO;
 
 namespace Auth.Services
 {
-    public static class TokenService
+    public class TokenService: ITokenService
     {
-        public static IConfigurationRoot GetConfig()
+        public IConfigurationRoot GetConfig()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile($"appsettings.json");
             return builder.Build();
         }
-        public static string GenerateToken(UserDto permissoes)
+        public string GenerateToken(UserDto permissoes)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = GetKey();
@@ -37,7 +37,7 @@ namespace Auth.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public static byte[] GetKey()
+        private byte[] GetKey()
         {
             var Config = GetConfig();
             var secret = Config.GetSection("Settings:Secret").Value;

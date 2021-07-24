@@ -1,15 +1,14 @@
-using Auth.Repositories;
-using Auth.Services;
+using Frutas.Repositories;
+using Frutas.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Auth.Commons.Config {
+namespace Frutas.Commons.Config {
     public static class DependencyInjectionConfig {
         public static IServiceCollection ResolveDependencies (this IServiceCollection services) {
             //Repositories
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFrutaRepository, FrutaRepository>();
             //Services
-            services.AddScoped<IUserService, UserService> ();
-            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IFrutaService, FrutaService> ();
 
             return services;
         }

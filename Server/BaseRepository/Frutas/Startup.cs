@@ -1,9 +1,9 @@
-using Auth.Commons;
-using Auth.Commons.Config;
+using Base.Repository.Config;
+using Frutas.Commons;
+using Frutas.Commons.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Auth
+namespace Frutas
 {
     public class Startup
     {
@@ -21,13 +21,14 @@ namespace Auth
         }
 
         public IConfiguration Configuration { get; }
-
         readonly string MyAllowSpecificOrigins = "CorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("Settings:Secret").Value);
+
+            var secret = Configuration.GetSection("Settings:Secret").Value;
+            var key = Encoding.ASCII.GetBytes(secret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,24 +52,26 @@ namespace Auth
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder
-                    .AllowAnyOrigin()
+                    builder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
             });
-            services.AddDbContext<UserDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("BancoDB")));
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddDbContext<FrutasDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("BancoDB")));
 
-            services.JsonSerializationConfig();
-            services.AddAutoMapper(typeof(Startup));
+            services.AddControllers();
+            services.ResolveExceptionHandler();
             services.ResolveDependencies();
             services.ResolveSwagger();
+            services.AddAutoMapper(typeof(Startup));
+
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserDbContext dataContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, FrutasDbContext dataContext)
         {
             dataContext.Database.Migrate();
             if (env.IsDevelopment())
