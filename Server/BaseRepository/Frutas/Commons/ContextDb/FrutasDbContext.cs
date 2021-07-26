@@ -6,14 +6,15 @@ namespace Frutas.Commons {
         public FrutasDbContext (DbContextOptions option) : base (option) { }
         public DbSet<Fruta> Frutas { get; set; }
         public DbSet<Carrinho> Carrinho { get; set; }
+        public DbSet<ItemCarrinho> ItemCarrinho { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Fruta>()
                 .HasIndex(c => new { c.Id}).IsUnique();
-            builder.Entity<ItemCarrinho>()
-                .HasIndex(c => new { c.Id }).IsUnique();
             builder.Entity<Carrinho>()
+                .HasIndex(c => new { c.Id }).IsUnique();
+            builder.Entity<ItemCarrinho>()
                 .HasIndex(c => new { c.Id }).IsUnique();
             builder.Entity<Carrinho>().HasMany(x => x.Itens);
 

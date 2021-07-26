@@ -7,8 +7,10 @@ namespace Frutas.Commons.Config {
         public static IServiceCollection ResolveDependencies (this IServiceCollection services) {
             //Repositories
             services.AddScoped<IFrutaRepository, FrutaRepository>();
+            services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
             //Services
             services.AddScoped<IFrutaService, FrutaService> ();
+            services.AddScoped<ICarrinhoService, CarrinhoService>();
 
             return services;
         }

@@ -57,7 +57,9 @@ namespace Frutas
                     .AllowAnyMethod();
                 });
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                      .AddNewtonsoftJson(options =>
+                      options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddDbContext<FrutasDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("BancoDB")));
 
             services.AddControllers();

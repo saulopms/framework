@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Base.Repository.Utils;
-using Frutas.Models;
+using Frutas.Models.Dto;
 using Frutas.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,21 +23,21 @@ namespace Frutas.Controller
 
         [HttpGet("{id}")]
         [Authorize]
-        public Task<Fruta> GetById(long id)
+        public Task<FrutaDto> GetById(long id)
         {
             return _FrutaService.GetById(id);
         }
 
         [HttpGet]
         [Authorize]
-        public Task<IEnumerable<Fruta>> GetAll()
+        public Task<IEnumerable<FrutaDto>> GetAll()
         {
             return _FrutaService.GetAll();
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Save(Fruta Fruta)
+        public IActionResult Save(FrutaDto Fruta)
         {
             var FrutaSave = _FrutaService.Save(Fruta);
             return Created(UrlUtils.FromUri(Request, FrutaSave.Id), FrutaSave);
@@ -52,7 +52,7 @@ namespace Frutas.Controller
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task Update(long id, Fruta Fruta)
+        public async Task Update(long id, FrutaDto Fruta)
         {
             await _FrutaService.Update(id, Fruta);
         }

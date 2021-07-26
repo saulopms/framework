@@ -32,6 +32,9 @@ namespace Frutas.Migrations
                     b.Property<DateTime>("DataCriacao")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("Finalizado")
+                        .HasColumnType("bit");
+
                     b.Property<double>("TotalPedido")
                         .HasColumnType("float");
 
@@ -86,17 +89,17 @@ namespace Frutas.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("CarrinhoId")
+                    b.Property<long>("CarrinhoId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("DataAtualizacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("ItemId")
+                    b.Property<long>("FrutaId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Valor")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -105,8 +108,6 @@ namespace Frutas.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.HasIndex("ItemId");
-
                     b.ToTable("ItemCarrinho");
                 });
 
@@ -114,13 +115,9 @@ namespace Frutas.Migrations
                 {
                     b.HasOne("Frutas.Models.Carrinho", null)
                         .WithMany("Itens")
-                        .HasForeignKey("CarrinhoId");
-
-                    b.HasOne("Frutas.Models.Fruta", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId");
-
-                    b.Navigation("Item");
+                        .HasForeignKey("CarrinhoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Frutas.Models.Carrinho", b =>

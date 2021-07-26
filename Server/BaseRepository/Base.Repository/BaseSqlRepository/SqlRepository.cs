@@ -12,7 +12,7 @@ namespace Base.Repository.BaseSqlRepository
     {
 
         protected readonly  DbContext Db;
-        protected readonly DbSet<TEntity> DbSet;
+        private readonly DbSet<TEntity> DbSet;
 
         protected SqlRepository(DbContext db)
         {

@@ -1,23 +1,24 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 using Base.Repository;
 using Base.Repository.ExceptionUtils;
 using Frutas.Models;
+using Frutas.Models.Dto;
 using Frutas.Models.Validator;
 using Frutas.Repositories;
-using Microsoft.Extensions.Configuration;
 
 
 namespace Frutas.Services {
     public class FrutaService : BaseServiceValidation, IFrutaService {
         private readonly IFrutaRepository _Frutarepository;
-        private readonly IConfiguration _Configuration;
+        private readonly IMapper _Imapper;
 
         public FrutaService (IFrutaRepository FrutaRepository, 
-            IConfiguration configuration) {
+             IMapper Imapper) {
             _Frutarepository = FrutaRepository;
-            _Configuration = configuration;
+            _Imapper = Imapper;
         }
 
 
@@ -30,34 +31,53 @@ namespace Frutas.Services {
             await _Frutarepository.Delete (Fruta);
         }
 
-        public async Task<Fruta> GetById (long id) 
+        public async Task<FrutaDto> GetById (long id) 
         {
             var Fruta = await _Frutarepository.GetById (id);
             if (Fruta == null) 
                 throw new CustomException (MessageException.OBJECT_NOT_FOUND_EXCEPTION, 
                     HttpStatusCode.NotFound);
-            return Fruta;
+            return _Imapper.Map<FrutaDto>(Fruta);
         }
 
-        public async Task<IEnumerable<Fruta>> GetAll()
+        public async Task<IEnumerable<FrutaDto>> GetAll()
         {
-            return await _Frutarepository.Search(x => x.Id > 0);
+            return _Imapper.Map<IEnumerable<FrutaDto>>(await _Frutarepository.Search(x => x.Id > 0));
         }
 
-        public async Task<Fruta> Save (Fruta entidade) 
+        public async Task<FrutaDto> Save (FrutaDto entidade) 
         {
             if (!ExecutarValidacao (new FrutaValidator (), entidade)) 
                 throw new CustomException (GetError (), HttpStatusCode.BadRequest);
-            var save = await _Frutarepository.Save (entidade);
-            return save;
+            var salvar = _Imapper.Map<Fruta>(entidade);
+            var save = await _Frutarepository.Save (salvar);
+            return _Imapper.Map<FrutaDto>(save);
         }
 
-        public async Task Update (long id, Fruta entidade) 
+        public async Task Update (long id, FrutaDto entidade) 
         {
             if (!ExecutarValidacao (new FrutaValidator (), entidade)) 
                 throw new CustomException (GetError (), HttpStatusCode.BadRequest);
             entidade.Id = id;
-            await _Frutarepository.Update (entidade);
+            await _Frutarepository.Update (_Imapper.Map<Fruta>(entidade));
+        }
+
+        public async Task<FrutaDto> Comprar (long id)
+        {
+            var fruta = await GetById(id);
+            if (fruta == null)
+                throw new CustomException("Dados não encontrados", HttpStatusCode.BadRequest);
+            if (fruta.Quantidade <= 0)
+                throw new CustomException(MessageException.SEM_ESTOQUE, HttpStatusCode.BadRequest);
+            fruta.Quantidade--;
+            await Update(id, fruta);
+            return fruta;
+        }
+
+        public async Task Devolver(long id, FrutaDto fruta)
+        {
+            fruta.Quantidade++;
+            await Update(id, fruta);
         }
     }
 }

@@ -1,7 +1,8 @@
 using FluentValidation;
+using Frutas.Models.Dto;
 
 namespace Frutas.Models.Validator {
-    public class FrutaValidator : AbstractValidator<Fruta> {
+    public class FrutaValidator : AbstractValidator<FrutaDto> {
         public FrutaValidator () {
             RuleFor (Fruta => Fruta.Nome)
                 .NotEmpty ().WithMessage ("O campo {PropertyName} precisa ser fornecido");
