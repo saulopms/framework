@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Frutas.Models;
 using Frutas.Models.Dto;
 using Frutas.Services;

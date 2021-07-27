@@ -1,6 +1,5 @@
 using Auth.Models;
 using Auth.Commons;
-using Base.Repository.Models;
 using Base.Repository.BaseSqlRepository;
 using Isopoh.Cryptography.Argon2;
 using System.Linq;

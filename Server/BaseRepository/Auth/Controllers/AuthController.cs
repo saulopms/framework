@@ -1,6 +1,5 @@
 ﻿using Auth.Models.DTO;
 using Auth.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;

@@ -28,30 +28,31 @@ namespace Frutas.Repositories
         public async Task<CarrinhoViewDto> GetCarrinho()
         {
             var carrinho = (from c in _FrutaDbContext.Carrinho.AsNoTracking().Include(i => i.Itens)
-                       select new CarrinhoViewDto()
-                       {
-                           Finalizado = c.Finalizado,
-                           TotalPedido = c.TotalPedido,
-                           Itens = c.Itens.Select( it => new 
+                           select new CarrinhoViewDto()
                            {
-                               Fruta = from f in _FrutaDbContext.Frutas.AsNoTracking().Where(f => f.Id == it.FrutaId) select new { Descricao = f.Descricao, Foto = f.Foto, Id = f.Id, Nome = f.Nome },
-                               Valor = it.Valor,
-                               Quantidade = it.Quantidade,
-                               Foto = "",
-                               Nome = "",
-                               Descricao = "",
-                               Id = it.Id
-                           }
-                           ).Select( it => new FrutaDto()
-                           {
-                               Descricao = it.Fruta.FirstOrDefault().Descricao,
-                               Foto = it.Fruta.FirstOrDefault().Foto,
-                               Valor = it.Valor,
-                               Nome = it.Fruta.FirstOrDefault().Nome,
-                               Quantidade = it.Quantidade,
-                               Id = it.Fruta.FirstOrDefault().Id
-                           }).ToList()
-                       });
+                               Finalizado = c.Finalizado,
+                               TotalPedido = c.TotalPedido,
+                               Itens = c.Itens.Select( it => new 
+                               {
+                                   Fruta = from f in _FrutaDbContext.Frutas.AsNoTracking().Where(f => f.Id == it.FrutaId) 
+                                           select new { Descricao = f.Descricao, Foto = f.Foto, Id = f.Id, Nome = f.Nome },
+                                   Valor = it.Valor,
+                                   Quantidade = it.Quantidade,
+                                   Foto = "",
+                                   Nome = "",
+                                   Descricao = "",
+                                   Id = it.Id
+                               }
+                               ).Select( it => new FrutaDto()
+                               {
+                                   Descricao = it.Fruta.FirstOrDefault().Descricao,
+                                   Foto = it.Fruta.FirstOrDefault().Foto,
+                                   Valor = it.Valor,
+                                   Nome = it.Fruta.FirstOrDefault().Nome,
+                                   Quantidade = it.Quantidade,
+                                   Id = it.Fruta.FirstOrDefault().Id
+                               }).ToList()
+                           });
 
             return carrinho.FirstOrDefault();
         }

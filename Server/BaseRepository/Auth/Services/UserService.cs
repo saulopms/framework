@@ -6,7 +6,6 @@ using Isopoh.Cryptography.Argon2;
 using System.Net;
 using Auth.Models.Validator;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Auth.Models.DTO;
 using Base.Repository.ExceptionUtils;
 
