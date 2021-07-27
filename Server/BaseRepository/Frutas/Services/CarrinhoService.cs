@@ -8,7 +8,6 @@ using Base.Repository;
 using Base.Repository.ExceptionUtils;
 using Frutas.Models;
 using Frutas.Models.Dto;
-using Frutas.Models.ViewModel;
 using Frutas.Repositories;
 
 
@@ -56,35 +55,15 @@ namespace Frutas.Services {
             return _Imapper.Map<IEnumerable<CarrinhoDto>>(dados);
         }
 
-        public async Task<CarrinhoViewModel> GetCarrinho()
+        public async Task<CarrinhoViewDto> GetCarrinho()
         {
             return await _Carrinhorepository.GetCarrinho();
-           /* var entity = await GetEmAberto();
-            var carrinho = new CarrinhoViewModel() { Finalizado = entity.Finalizado, TotalPedido = entity.TotalPedido };
-            foreach (var e in entity.Itens)
-            {
-                var fruta = await _FrutaService.GetById(e.FrutaId);
-                fruta.Quantidade = e.Quantidade;
-                fruta.Valor = e.Valor;
-                carrinho.Itens.Add(fruta);
-            }
-            return carrinho;*/
-            /*var employeeCourses = Context.Employees
-                        .Where(e => e.Id == id)
-                        .SelectMany(e => e.employeeCourses
-                        .SelectMany(ec => ec.Course))
-                        .Include(c => c.Urls)
-                        .ToList();
-
-
-
-    return employeeCourses;*/
         }
 
-        public async Task<CarrinhoDto> Comprar(long idfruta)
+        public CarrinhoDto Comprar(long idfruta)
         {
-            var aberto = await GetEmAberto();
-            var fruta = await _FrutaService.Comprar(idfruta);
+            var aberto = GetEmAberto().Result;
+            var fruta = _FrutaService.Comprar(idfruta).Result;
             try
             {
                 var item = new ItemCarrinho() { FrutaId = idfruta, Quantidade = 1, Valor = fruta.Valor };
@@ -92,7 +71,7 @@ namespace Frutas.Services {
                 {
                     List<ItemCarrinho> itens = new List<ItemCarrinho>() { item };
                     aberto = new CarrinhoDto() { Itens = itens };
-                    aberto = await Save(aberto);
+                    aberto = Save(aberto).Result;
                 }
                 else
                 {
@@ -111,12 +90,12 @@ namespace Frutas.Services {
                         aberto.Itens.Add(item);
                     var total = aberto.Itens.Sum(x => x.Valor);
                     aberto.TotalPedido = total;
-                    await Update(aberto.Id, aberto);
+                    Update(aberto.Id, aberto);
                 }
             }
             catch(Exception ex)
             {
-                await _FrutaService.Devolver(idfruta, fruta);
+                _FrutaService.Devolver(idfruta, fruta);
             }
 
             return aberto;
@@ -129,18 +108,12 @@ namespace Frutas.Services {
             return carrinhoDto;
         }
 
-        public async Task Update (long id, CarrinhoDto entidade) 
+        public Task Update (long id, CarrinhoDto entidade) 
         {
             var model = _Imapper.Map<Carrinho>(entidade);
             model.Id = id;
-            await _Carrinhorepository.Update(model);
+            return _Carrinhorepository.Update(model);
         }
 
-        public async Task Finalizar(long id)
-        {
-            var compra = await GetById(id);
-            compra.Finalizado = true;
-            await Update(id, compra);
-        }
     }
 }

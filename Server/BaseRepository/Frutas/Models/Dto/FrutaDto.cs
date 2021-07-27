@@ -1,6 +1,4 @@
-﻿using Base.Repository.Models;
-
-namespace Frutas.Models.Dto
+﻿namespace Frutas.Models.Dto
 {
     public class FrutaDto
     {

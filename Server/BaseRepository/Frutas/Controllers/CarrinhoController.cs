@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Base.Repository.Utils;
 using Frutas.Models;
 using Frutas.Models.Dto;
-using Frutas.Models.ViewModel;
 using Frutas.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,25 +30,24 @@ namespace Frutas.Controller
 
         [HttpGet]
         [Authorize]
-        public Task<CarrinhoDto> GetAll()
-        {
-            return _CarrinhoService.GetEmAberto();
-        }
-
-        [HttpGet]
-        [Authorize]
-        [Route("Carrinho")]
-        public Task<CarrinhoViewModel> GetCarrinho()
+        public Task<CarrinhoViewDto> GetCarrinho()
         {
             return _CarrinhoService.GetCarrinho();
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("Aberto")]
+        public Task<CarrinhoDto> GetAberto()
+        {
+            return _CarrinhoService.GetEmAberto();
+        }
+
         [HttpPost]
         [Authorize]
-        public async Task<CarrinhoDto> Save(ItemCarrinho fruta)
+        public CarrinhoDto Save(ItemCarrinho fruta)
         {
-            return await _CarrinhoService.Comprar(fruta.FrutaId); 
-            //Created(UrlUtils.FromUri(Request, CarrinhoSave.Id), CarrinhoSave);
+            return _CarrinhoService.Comprar(fruta.FrutaId); 
         }
 
         [HttpDelete("{id}")]

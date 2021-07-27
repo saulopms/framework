@@ -1,9 +1,8 @@
-﻿using Frutas.Models.Dto;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Frutas.Models.ViewModel
+namespace Frutas.Models.Dto
 {
-    public class CarrinhoViewModel
+    public class CarrinhoViewDto
     {
         public List<FrutaDto> Itens { get; set; }
         public double TotalPedido { get; set; }

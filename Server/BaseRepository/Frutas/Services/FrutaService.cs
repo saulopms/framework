@@ -64,7 +64,7 @@ namespace Frutas.Services {
 
         public async Task<FrutaDto> Comprar (long id)
         {
-            var fruta = await GetById(id);
+            var fruta = GetById(id).Result;
             if (fruta == null)
                 throw new CustomException("Dados não encontrados", HttpStatusCode.BadRequest);
             if (fruta.Quantidade <= 0)

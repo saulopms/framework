@@ -1,5 +1,4 @@
 using Base.Repository;
-using Frutas.Models;
 using Frutas.Models.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
